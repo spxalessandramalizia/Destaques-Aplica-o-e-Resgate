@@ -3,10 +3,16 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import datetime
 
-conn = db.connect('Driver={SQL Server};Server=EQNSQL02\\HOMOLOGASPXBANCO;Database=RIMovimentos;Trusted_Connection=yes')
-mov = pd.read_sql_query('SELECT m.*, f.CODMASTER FROM Movimentacoes m JOIN FIQs f ON m.CODFUND = f.CODFUND', conn)
-mov = pd.DataFrame(mov)
-conn.close()
+# conn = db.connect('Driver={SQL Server};Server=EQNSQL02\\HOMOLOGASPXBANCO;Database=RIMovimentos;Trusted_Connection=yes')
+# mov = pd.read_sql_query('SELECT m.*, f.CODMASTER FROM Movimentacoes m JOIN FIQs f ON m.CODFUND = f.CODFUND', conn)
+# mov = pd.DataFrame(mov)
+# conn.close()
+
+mov = pd.read_excel(r'O:\CAIXAS\FLUXO\Movimentações Histórica.xlsm', sheet_name='BASE')
+dict_masters = {'NIMITZ':61981, 'RAPTOR':61984, 'FALCON':61922, 'PATRIOT':61921, 'APACHE':61923, 'LANCER':63056, 'SEAHAWK':64480}
+mov.columns = ['CODCOT', 'COTISTA', 'CODFUND', 'FUNDO', 'CODMASTER', 'SOLICITACAO', 'COTIZACAO', 'IMPACTO', 'OPERACAO', 'TIPO_RESGATE', 'FINANCEIRO', 'COTAS', 'ALOCADOR']
+mov.replace({'CODMASTER':dict_masters}, inplace=True)
+mov = mov[1:]
 
 mov['COTIZACAO'] = pd.to_datetime(mov['COTIZACAO'])
 mov['SOLICITACAO'] = pd.to_datetime(mov['SOLICITACAO'])
