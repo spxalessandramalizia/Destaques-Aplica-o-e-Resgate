@@ -18,6 +18,17 @@ mov['COTIZACAO'] = pd.to_datetime(mov['COTIZACAO'])
 mov['SOLICITACAO'] = pd.to_datetime(mov['SOLICITACAO'])
 mov.index = mov.COTIZACAO
 
+r180 = [62026, 63630, 63708, 63997, 63998, 63999, 64271, 64298, 64441, 64607, 64615]
+def regra(row):
+    if row['CODFUND']==62455:
+        return 'L'
+    elif row['CODFUND'] in r180:
+        return 'T'
+    else:
+        return 'M'
+
+mov['REGRA'] = mov.apply(lambda row: regra(row), axis=1)
+
 def destaques(fundo, inicio, fim):
     ap = mov[(mov['OPERACAO']=='A') & (mov['CODMASTER']==fundo) &
         (mov['COTIZACAO']>=inicio) & (mov['COTIZACAO']<=fim)].groupby('ALOCADOR').sum().reset_index()
